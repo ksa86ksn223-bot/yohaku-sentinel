@@ -1,0 +1,50 @@
+﻿name: YOHAKU Sentinel
+on:
+  schedule:
+    - cron: "0 0 * * *"
+    - cron: "0 12 * * *"
+    - cron: "5 0 * * 1"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "監視モード"
+        required: true
+        default: "immediate"
+        type: choice
+        options:
+          - immediate
+          - weekly
+env:
+  NOTION_TOKEN:              ${{ secrets.NOTION_TOKEN }}
+  NOTION_DB_GOVERNANCE_LOG:  ${{ secrets.NOTION_DB_GOVERNANCE_LOG }}
+  NOTION_DB_AGENT_LEDGER:    ${{ secrets.NOTION_DB_AGENT_LEDGER }}
+  NOTION_DB_PROPOSALS:       ${{ secrets.NOTION_DB_PROPOSALS }}
+jobs:
+  immediate_watch:
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'schedule' && github.event.schedule != '5 0 * * 1')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests pyyaml
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python sentinel/sentinel.py --mode immediate
+  weekly_watch:
+    runs-on: ubuntu-latest
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'weekly') ||
+      (github.event_name == 'schedule' && github.event.schedule == '5 0 * * 1')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests pyyaml
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python sentinel/sentinel.py --mode weekly
