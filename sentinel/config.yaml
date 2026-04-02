@@ -1,0 +1,32 @@
+watchers:
+  github:
+    enabled: true
+    mode: immediate
+    repos:
+      - ksa86ksn223-bot/yohaku-os-core
+    lookback_hours: 24
+  proposal:
+    enabled: true
+    mode: weekly
+    threshold: 3
+    status_unchecked: "未確認"
+  agent_ledger:
+    enabled: true
+    mode: immediate
+    error_status: "エラー"
+  error_log:
+    enabled: true
+    repos:
+      - ksa86ksn223-bot/yohaku-os-core
+      - ksa86ksn223-bot/yohaku-sentinel
+    max_logs: 10
+    lookback_hours: 48
+    summary:
+      enabled: true
+      schedule: weekly
+
+notion:
+  governance_log_db: "${NOTION_DB_GOVERNANCE_LOG}"
+  agent_ledger_db: "${NOTION_DB_AGENT_LEDGER}"
+  proposal_db: "${NOTION_DB_PROPOSALS}"
+  api_version: "2022-06-28"
