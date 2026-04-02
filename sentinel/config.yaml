@@ -14,6 +14,16 @@ watchers:
     enabled: true
     mode: immediate
     error_status: "エラー"
+  error_log:
+    enabled: true
+    repos:
+      - ksa86ksn223-bot/yohaku-os-core
+      - ksa86ksn223-bot/yohaku-sentinel
+    max_logs: 10
+    lookback_hours: 48
+    summary:
+      enabled: true
+      schedule: weekly
 
 notion:
   governance_log_db: "${NOTION_DB_GOVERNANCE_LOG}"
